@@ -1,3 +1,4 @@
+# coding: UTF-8
 """
 MQTT Publish
 
@@ -12,7 +13,9 @@ Folder Structure
 Requeired Library
 - paho-mqtt
 """
+import os
 import ssl
+import subprocess
 
 from time import sleep
 
@@ -30,6 +33,8 @@ TOPIC = ""
 HOST = ENDPOINT + ".iot.ap-northeast-1.amazonaws.com"
 ## ポート番号は以下、固定
 PORT = 8883  # port
+
+B_PATH = os.getcwd()
 ## AWS IoTで作成した証明書
 ROOT_CA = "./cert/AmazonRootCA1.pem"
 CLIENT_CERT = "./cert/" + CERT_ID + "-certificate.pem.crt"
@@ -71,12 +76,9 @@ def create_connection():
     client.on_connect = on_connect
     client.on_message = on_message
     # certifications
-    client.tls_set(ROOT_CA,
-                   certfile=CLIENT_CERT,
-                   keyfile=PRIVATE_KEY,
-                   cert_reqs=ssl.CERT_REQUIRED,
-                   tls_version=ssl.PROTOCOL_TLSv1_2,
-                   ciphers=None)
+    client.tls_set(ROOT_CA, certfile=CLIENT_CERT, keyfile=PRIVATE_KEY,
+                   cert_reqs=ssl.CERT_REQUIRED, tls_version=ssl.PROTOCOL_TLSv1_2, ciphers=None)
+
     # port, keepalive
     client.connect(HOST, port=PORT, keepalive=60)
     return client
